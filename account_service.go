@@ -67,7 +67,6 @@ func (s *BankAccountService) Transfer(to *Account, amount float64) error {
 		return ErrSameAccountTransfer
 	}
 
-	// Снимаем со счета отправителя
 	s.account.Balance -= amount
 	s.account.addTransaction(Transaction{
 		Type:            Transfer,
@@ -77,7 +76,7 @@ func (s *BankAccountService) Transfer(to *Account, amount float64) error {
 		TargetAccountID: to.ID,
 	})
 
-	// Пополняем счет получателя
+	
 	to.Balance += amount
 	to.addTransaction(Transaction{
 		Type:        Transfer,
@@ -86,7 +85,7 @@ func (s *BankAccountService) Transfer(to *Account, amount float64) error {
 		Description: fmt.Sprintf("Перевод от счета %s", s.account.ID),
 	})
 
-	// Сохраняем оба счета
+	
 	if err := s.storage.SaveAccount(s.account); err != nil {
 		return err
 	}
@@ -127,3 +126,4 @@ func (a *Account) addTransaction(t Transaction) {
 	t.ID = fmt.Sprintf("TX%d", time.Now().UnixNano())
 	a.Transactions = append(a.Transactions, t)
 }
+
